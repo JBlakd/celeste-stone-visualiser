@@ -1,9 +1,9 @@
 {
-  "name": "product-configurator-3d",
+  "name": "celeste-stone-visualiser",
+  "description": "Celeste Stone 3D surface visualiser",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "3D Product Configurator built with React Three Fiber",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
