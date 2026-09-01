@@ -16,5 +16,14 @@
     "colorMode": "body",
     "description": "Large Kitchen Island",
     "materials": []
+  },
+  {
+    "id": "largeKitchenIsland-v2",
+    "name": "Large Kitchen Island V2",
+    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v2.glb",
+    "loader": "gltf",
+    "colorMode": "body",
+    "description": "Large Kitchen Island V2",
+    "materials": []
   }
 ]

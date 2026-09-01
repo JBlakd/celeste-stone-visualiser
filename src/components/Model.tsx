@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
-import { useGLTF } from "@react-three/drei";
+
+import { useGLTF, useTexture } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -11,15 +12,51 @@ interface ModelProps {
   model: ModelDefinition;
 }
 
+const TEST_SLAB_URL =
+  "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp";
+
 export function Model({ model }: ModelProps) {
   const { scene: source } = useGLTF(model.path);
+  const slabTexture = useTexture(TEST_SLAB_URL);
 
   const gl = useThree((state) => state.gl);
 
   const maxAnisotropy = useMemo(() => gl.capabilities.getMaxAnisotropy(), [gl]);
 
+  useEffect(() => {
+    // TextureLoader textures use normal image orientation by default.
+    // glTF UVs expect this flipped setting.
+    slabTexture.flipY = false;
+
+    // This is a colour/albedo texture, not linear data.
+    slabTexture.colorSpace = THREE.SRGBColorSpace;
+
+    slabTexture.wrapS = THREE.RepeatWrapping;
+    slabTexture.wrapT = THREE.RepeatWrapping;
+
+    slabTexture.anisotropy = maxAnisotropy;
+    slabTexture.needsUpdate = true;
+  }, [slabTexture, maxAnisotropy]);
+
   const scene = useMemo(() => {
     const clone = source.clone(true);
+
+    const prepareMaterial = (
+      originalMaterial: THREE.Material,
+    ): THREE.Material => {
+      if (originalMaterial.name === "STONE_BENCHTOP") {
+        console.log("Creating NEW stone material");
+
+        return new THREE.MeshBasicMaterial({
+          name: "STONE_BENCHTOP",
+          map: slabTexture,
+          color: 0xffffff,
+          side: THREE.DoubleSide,
+        });
+      }
+
+      return originalMaterial.clone();
+    };
 
     clone.traverse((child) => {
       const mesh = child as THREE.Mesh;
@@ -28,9 +65,9 @@ export function Model({ model }: ModelProps) {
 
       // Don't mutate useGLTF's cached materials.
       if (Array.isArray(mesh.material)) {
-        mesh.material = mesh.material.map((material) => material.clone());
+        mesh.material = mesh.material.map(prepareMaterial);
       } else if (mesh.material) {
-        mesh.material = mesh.material.clone();
+        mesh.material = prepareMaterial(mesh.material);
       }
 
       mesh.castShadow = true;
@@ -38,7 +75,7 @@ export function Model({ model }: ModelProps) {
     });
 
     return clone;
-  }, [source]);
+  }, [source, slabTexture]);
 
   useEffect(() => {
     scene.traverse((child) => {
