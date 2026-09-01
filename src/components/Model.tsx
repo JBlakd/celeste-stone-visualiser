@@ -8,6 +8,8 @@ import type { ModelDefinition } from "../data/models";
 import { computeAutoFit } from "../three/meshUtils";
 import { upgradeMeshTextures } from "../three/textures";
 
+import { SurfaceRole, isSurfaceRole } from "../data/surface";
+
 interface ModelProps {
   model: ModelDefinition;
 }
@@ -44,18 +46,32 @@ export function Model({ model }: ModelProps) {
     const prepareMaterial = (
       originalMaterial: THREE.Material,
     ): THREE.Material => {
-      if (originalMaterial.name === "STONE_BENCHTOP") {
-        console.log("Creating NEW stone material");
-
-        return new THREE.MeshBasicMaterial({
-          name: "STONE_BENCHTOP",
-          map: slabTexture,
-          color: 0xffffff,
-          side: THREE.DoubleSide,
-        });
+      if (!isSurfaceRole(originalMaterial.name)) {
+        return originalMaterial.clone();
       }
 
-      return originalMaterial.clone();
+      switch (originalMaterial.name) {
+        case SurfaceRole.StoneBenchtop:
+          return new THREE.MeshBasicMaterial({
+            name: SurfaceRole.StoneBenchtop,
+            map: slabTexture,
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+          });
+
+        case SurfaceRole.StoneSplashback:
+          return new THREE.MeshBasicMaterial({
+            name: SurfaceRole.StoneSplashback,
+            map: slabTexture,
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+          });
+
+        case SurfaceRole.Cabinetry:
+        case SurfaceRole.Floor:
+        default:
+          return originalMaterial.clone();
+      }
     };
 
     clone.traverse((child) => {
