@@ -10,16 +10,16 @@ import { upgradeMeshTextures } from "../three/textures";
 
 import { SurfaceRole, isSurfaceRole } from "../data/surface";
 
+import type { SlabDefinition } from "../data/slabs";
+
 interface ModelProps {
   model: ModelDefinition;
+  slab: SlabDefinition;
 }
 
-const TEST_SLAB_URL =
-  "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp";
-
-export function Model({ model }: ModelProps) {
+export function Model({ model, slab }: ModelProps) {
   const { scene: source } = useGLTF(model.path);
-  const slabTexture = useTexture(TEST_SLAB_URL);
+  const slabTexture = useTexture(slab.texture);
 
   const gl = useThree((state) => state.gl);
 

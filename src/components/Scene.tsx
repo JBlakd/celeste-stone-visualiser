@@ -11,6 +11,9 @@ import { Model } from "./Model";
 import { ModelSelector } from "./ModelSelector";
 import { MODELS } from "../data/models";
 
+import { SLABS } from "../data/slabs";
+import { SlabSelector } from "./SlabSelector";
+
 function LoadingFallback() {
   return (
     <Html center>
@@ -22,13 +25,20 @@ function LoadingFallback() {
 export function Scene() {
   const [currentModelId, setCurrentModelId] = useState(MODELS[0]?.id ?? "");
 
+  const [currentSlabId, setCurrentSlabId] = useState(SLABS[0]?.id ?? "");
+
   const currentModel = useMemo(
     () => MODELS.find((model) => model.id === currentModelId) ?? MODELS[0],
     [currentModelId],
   );
 
-  if (!currentModel) {
-    return <div>No models configured.</div>;
+  const currentSlab = useMemo(
+    () => SLABS.find((slab) => slab.id === currentSlabId) ?? SLABS[0],
+    [currentSlabId],
+  );
+
+  if (!currentModel || !currentSlab) {
+    return <div>Visualiser data unavailable.</div>;
   }
 
   return (
@@ -44,9 +54,7 @@ export function Scene() {
 
         <Suspense fallback={<LoadingFallback />}>
           <SoftShadows size={25} samples={20} focus={0.5} />
-
           <Environment preset="apartment" />
-
           <directionalLight
             position={[5, 8, 5]}
             intensity={1}
@@ -54,8 +62,11 @@ export function Scene() {
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
           />
-
-          <Model key={currentModel.id} model={currentModel} />
+          <Model
+            key={currentModel.id}
+            model={currentModel}
+            slab={currentSlab}
+          />
         </Suspense>
 
         <OrbitControls
@@ -74,6 +85,11 @@ export function Scene() {
           onModelChange={setCurrentModelId}
         />
       )}
+      <SlabSelector
+        slabs={SLABS}
+        currentSlabId={currentSlab.id}
+        onSlabChange={setCurrentSlabId}
+      />
     </main>
   );
 }

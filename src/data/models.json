@@ -1,11 +1,11 @@
 [
   {
-    "id": "smallModernKitchen",
-    "name": "Small Modern Kitchen",
-    "path": "https://visualiser-assets.celestestone.com.au/models/smallModernKitchen.glb",
+    "id": "largeKitchenIsland-v2",
+    "name": "Large Kitchen Island V2",
+    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v2.glb",
     "loader": "gltf",
     "colorMode": "body",
-    "description": "Small Modern Kitchen",
+    "description": "Large Kitchen Island V2",
     "materials": []
   },
   {
@@ -18,12 +18,12 @@
     "materials": []
   },
   {
-    "id": "largeKitchenIsland-v2",
-    "name": "Large Kitchen Island V2",
-    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v2.glb",
+    "id": "smallModernKitchen",
+    "name": "Small Modern Kitchen",
+    "path": "https://visualiser-assets.celestestone.com.au/models/smallModernKitchen.glb",
     "loader": "gltf",
     "colorMode": "body",
-    "description": "Large Kitchen Island V2",
+    "description": "Small Modern Kitchen",
     "materials": []
   }
 ]
