@@ -138,15 +138,15 @@ export function Scene() {
         <color attach="background" args={[backgroundColor]} />
         <Suspense fallback={<LoadingFallback />}>
           <Shadows />
-          <Environment preset="studio" />
-          <ambientLight intensity={0.3} />
+          <Environment preset="apartment" />
           <directionalLight
-            position={[5, 5, 5]}
-            intensity={1}
+            position={[5, 8, 5]}
+            intensity={1.5}
             castShadow
-            shadow-mapSize={2048}
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-bias={-0.0001}
           />
-          <directionalLight position={[-5, 5, -5]} intensity={0.5} castShadow />
           <Configurator
             key={currentModel.id}
             colors={colors}
@@ -164,8 +164,8 @@ export function Scene() {
             autoRotateSpeed={1.0}
             minPolarAngle={Math.PI / 6}
             maxPolarAngle={Math.PI / 1.2}
-            minDistance={1.0}
-            maxDistance={6}
+            minDistance={0.05}
+            maxDistance={200}
             enableDamping
             dampingFactor={0.05}
             mouseButtons={

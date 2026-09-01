@@ -146,8 +146,8 @@ export function BodyTintedConfigurator({
       if (hovered) finalColor.multiplyScalar(1.2);
       if (isSelected) finalColor.lerp(new Color("#ffeb3b"), 0.35);
 
-      mesh.castShadow = false;
-      mesh.receiveShadow = false;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
 
       const applyToMat = (mat: THREE.Material | null | undefined) => {
         const m = mat as THREE.MeshStandardMaterial | null;
