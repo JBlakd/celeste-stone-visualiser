@@ -7,5 +7,14 @@
     "colorMode": "body",
     "description": "Small Modern Kitchen",
     "materials": []
+  },
+  {
+    "id": "studioApartment",
+    "name": "Studio Apartment",
+    "path": "https://visualiser-assets.celestestone.com.au/models/studioApartment.glb",
+    "loader": "gltf",
+    "colorMode": "body",
+    "description": "Studio Apartment",
+    "materials": []
   }
 ]
