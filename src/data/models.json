@@ -3,8 +3,9 @@
     "id": "smallModernKitchen",
     "name": "Small Modern Kitchen",
     "path": "https://visualiser-assets.celestestone.com.au/models/smallModernKitchen.glb",
-    "loader": "glb",
-    "description": "smallModernKitchen.glb",
+    "loader": "gltf",
+    "colorMode": "body",
+    "description": "Small Modern Kitchen",
     "materials": []
   }
 ]
