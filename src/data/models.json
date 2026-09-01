@@ -7,5 +7,14 @@
     "colorMode": "body",
     "description": "Small Modern Kitchen",
     "materials": []
+  },
+  {
+    "id": "largeKitchenIsland",
+    "name": "Large Kitchen Island",
+    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland.glb",
+    "loader": "gltf",
+    "colorMode": "body",
+    "description": "Large Kitchen Island",
+    "materials": []
   }
 ]
