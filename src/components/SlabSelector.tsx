@@ -36,6 +36,7 @@ export function SlabSelector({
         className="slab-preview"
         src={currentSlab.texture}
         alt={currentSlab.name}
+        crossOrigin="anonymous"
       />
 
       <div className="slab-name">{currentSlab.name}</div>
