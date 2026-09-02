@@ -4,13 +4,13 @@
     "sku": "CSF6669",
     "name": "Calacatta Black",
     "level": 2,
-    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp?cors-test=69"
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp"
   },
   {
     "id": "taj-mahal",
     "sku": "CSF9070",
     "name": "Taj Mahal",
     "level": 4,
-    "texture": "https://visualiser-assets.celestestone.com.au/slabs/CSF9070-Taj_Mahal.webp?cors-test=69"
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF9070-Taj_Mahal.webp"
   }
 ]
