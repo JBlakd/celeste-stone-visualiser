@@ -5,24 +5,30 @@ import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 import type { ModelDefinition } from "../data/models";
-import type { SlabDefinition } from "../data/slabs";
+import type { SurfaceSlabMap } from "../data/slabs";
 
-import { SurfaceRole, isSurfaceRole } from "../data/surface";
+import {
+  SLAB_SURFACES,
+  isSlabSurfaceRole,
+  type SlabSurfaceRole,
+} from "../data/surface";
+
 import { computeAutoFit } from "../three/meshUtils";
 import { upgradeMeshTextures } from "../three/textures";
 
 interface ModelProps {
   model: ModelDefinition;
-  slab: SlabDefinition;
+  surfaceSlabs: SurfaceSlabMap;
 }
 
-export function Model({ model, slab }: ModelProps) {
+export function Model({ model, surfaceSlabs }: ModelProps) {
   const { scene: source } = useGLTF(model.path);
 
   const gl = useThree((state) => state.gl);
 
-  const currentSlabTexture = useRef<THREE.Texture | null>(null);
+  const currentSlabTextures = useRef(new Map<SlabSurfaceRole, THREE.Texture>());
 
+  const currentSlabUrls = useRef(new Map<SlabSurfaceRole, string>());
   const maxAnisotropy = useMemo(() => gl.capabilities.getMaxAnisotropy(), [gl]);
 
   const isMobile = useMemo(
@@ -37,32 +43,46 @@ export function Model({ model, slab }: ModelProps) {
    *
    * Slab changes no longer rebuild this entire scene.
    */
-  const scene = useMemo(() => {
+  const { scene, slabMaterials } = useMemo(() => {
     const clone = source.clone(true);
+
+    /*
+     * One shared material per role.
+     *
+     * If island + rear bench both use STONE_BENCHTOP,
+     * they reuse the exact same material instance.
+     */
+    const slabMaterials = new Map<
+      SlabSurfaceRole,
+      THREE.MeshStandardMaterial
+    >();
 
     const prepareMaterial = (
       originalMaterial: THREE.Material,
     ): THREE.Material => {
-      if (!isSurfaceRole(originalMaterial.name)) {
+      if (!isSlabSurfaceRole(originalMaterial.name)) {
         return originalMaterial.clone();
       }
 
-      switch (originalMaterial.name) {
-        case SurfaceRole.StoneBenchtop:
-        case SurfaceRole.StoneSplashback:
-          return new THREE.MeshStandardMaterial({
-            name: originalMaterial.name,
-            color: 0xffffff,
-            roughness: 0.25,
-            metalness: 0,
-            side: THREE.DoubleSide,
-          });
+      const role = originalMaterial.name;
 
-        case SurfaceRole.Cabinetry:
-        case SurfaceRole.Floor:
-        default:
-          return originalMaterial.clone();
+      const existing = slabMaterials.get(role);
+
+      if (existing) {
+        return existing;
       }
+
+      const material = new THREE.MeshStandardMaterial({
+        name: role,
+        color: 0xffffff,
+        roughness: 0.25,
+        metalness: 0,
+        side: THREE.DoubleSide,
+      });
+
+      slabMaterials.set(role, material);
+
+      return material;
     };
 
     clone.traverse((child) => {
@@ -80,7 +100,10 @@ export function Model({ model, slab }: ModelProps) {
       mesh.receiveShadow = true;
     });
 
-    return clone;
+    return {
+      scene: clone,
+      slabMaterials,
+    };
   }, [source]);
 
   /*
@@ -96,108 +119,111 @@ export function Model({ model, slab }: ModelProps) {
     });
   }, [scene, maxAnisotropy]);
 
-  /*
-   * Load slab texture manually.
-   *
-   * Crucially:
-   *   old slab -> dispose()
-   *   new slab -> GPU
-   *
-   * We are NOT retaining every slab ever selected.
-   */
   useEffect(() => {
     let cancelled = false;
 
     const loader = new THREE.TextureLoader();
 
-    loader.load(
-      slab.texture,
+    loader.setCrossOrigin("anonymous");
 
-      (texture) => {
-        if (cancelled) {
-          texture.dispose();
-          return;
-        }
+    for (const { role } of SLAB_SURFACES) {
+      const slab = surfaceSlabs[role];
+      const material = slabMaterials.get(role);
 
-        texture.flipY = false;
-        texture.colorSpace = THREE.SRGBColorSpace;
+      /*
+       * Model might not actually contain this role.
+       *
+       * No material = don't load the fucken texture.
+       */
+      if (!slab || !material) {
+        continue;
+      }
 
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
+      /*
+       * Nothing changed for this surface.
+       *
+       * This is important:
+       * changing splashback must NOT reload benchtop.
+       */
+      if (currentSlabUrls.current.get(role) === slab.texture) {
+        continue;
+      }
 
-        if (isMobile) {
+      const textureUrl = slab.texture;
+
+      loader.load(
+        textureUrl,
+
+        (texture) => {
+          if (cancelled) {
+            texture.dispose();
+            return;
+          }
+
+          texture.flipY = false;
+          texture.colorSpace = THREE.SRGBColorSpace;
+
+          texture.wrapS = THREE.RepeatWrapping;
+
+          texture.wrapT = THREE.RepeatWrapping;
+
+          if (isMobile) {
+            texture.generateMipmaps = false;
+
+            texture.minFilter = THREE.LinearFilter;
+
+            texture.magFilter = THREE.LinearFilter;
+
+            texture.anisotropy = Math.min(maxAnisotropy, 4);
+          } else {
+            texture.generateMipmaps = true;
+
+            texture.minFilter = THREE.LinearMipmapLinearFilter;
+
+            texture.magFilter = THREE.LinearFilter;
+
+            texture.anisotropy = maxAnisotropy;
+          }
+
+          texture.needsUpdate = true;
+
           /*
-           * Save a cuntload of mobile VRAM.
-           *
-           * Full mip chains cost roughly another 33%.
+           * Replace ONLY this role.
            */
-          texture.generateMipmaps = false;
-          texture.minFilter = THREE.LinearFilter;
-          texture.magFilter = THREE.LinearFilter;
+          material.map = texture;
+          material.needsUpdate = true;
 
-          texture.anisotropy = Math.min(maxAnisotropy, 4);
-        } else {
-          texture.generateMipmaps = true;
-          texture.minFilter = THREE.LinearMipmapLinearFilter;
-          texture.magFilter = THREE.LinearFilter;
+          const previousTexture = currentSlabTextures.current.get(role);
 
-          texture.anisotropy = maxAnisotropy;
-        }
+          currentSlabTextures.current.set(role, texture);
 
-        texture.needsUpdate = true;
+          currentSlabUrls.current.set(role, textureUrl);
 
-        /*
-         * Apply this one texture to every stone surface.
-         */
-        scene.traverse((child) => {
-          const mesh = child as THREE.Mesh;
+          /*
+           * Murder previous GPU texture for
+           * THIS surface only.
+           */
+          if (previousTexture && previousTexture !== texture) {
+            previousTexture.dispose();
+          }
+        },
 
-          if (!mesh.isMesh) return;
+        undefined,
 
-          const materials = Array.isArray(mesh.material)
-            ? mesh.material
-            : [mesh.material];
-
-          materials.forEach((material) => {
-            if (
-              material instanceof THREE.MeshStandardMaterial &&
-              (material.name === SurfaceRole.StoneBenchtop ||
-                material.name === SurfaceRole.StoneSplashback)
-            ) {
-              material.map = texture;
-              material.needsUpdate = true;
-            }
-          });
-        });
-
-        /*
-         * NOW murder the old GPU texture.
-         */
-        const previousTexture = currentSlabTexture.current;
-
-        currentSlabTexture.current = texture;
-
-        if (previousTexture && previousTexture !== texture) {
-          previousTexture.dispose();
-        }
-      },
-
-      undefined,
-
-      (error) => {
-        console.error("Failed to load slab texture:", slab.texture, error);
-      },
-    );
+        (error) => {
+          console.error(
+            `Failed to load slab texture for ${role}:`,
+            textureUrl,
+            error,
+          );
+        },
+      );
+    }
 
     return () => {
-      /*
-       * Can't abort TextureLoader's underlying image request,
-       * but if it finishes after slab changed we'll dispose it
-       * immediately instead of putting it on the GPU.
-       */
       cancelled = true;
     };
-  }, [slab.texture, scene, maxAnisotropy, isMobile]);
+  }, [surfaceSlabs, slabMaterials, maxAnisotropy, isMobile]);
 
   /*
    * Dispose our dynamic slab + cloned materials
@@ -205,8 +231,10 @@ export function Model({ model, slab }: ModelProps) {
    */
   useEffect(() => {
     return () => {
-      currentSlabTexture.current?.dispose();
-      currentSlabTexture.current = null;
+      currentSlabTextures.current.forEach((texture) => texture.dispose());
+
+      currentSlabTextures.current.clear();
+      currentSlabUrls.current.clear();
 
       scene.traverse((child) => {
         const mesh = child as THREE.Mesh;

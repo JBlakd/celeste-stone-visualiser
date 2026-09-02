@@ -1,12 +1,14 @@
 import type { SlabDefinition } from "../data/slabs";
 
 interface SlabSelectorProps {
+  title: string;
   slabs: SlabDefinition[];
   currentSlabId: string;
   onSlabChange: (slabId: string) => void;
 }
 
 export function SlabSelector({
+  title,
   slabs,
   currentSlabId,
   onSlabChange,
@@ -18,7 +20,7 @@ export function SlabSelector({
 
   return (
     <div className="slab-selector">
-      <div className="selector-title">Stone</div>
+      <div className="selector-title">{title}</div>
 
       <select
         className="slab-dropdown"
@@ -32,14 +34,8 @@ export function SlabSelector({
         ))}
       </select>
 
-      <img
-        className="slab-preview"
-        src={currentSlab.texture}
-        alt={currentSlab.name}
-        crossOrigin="anonymous"
-      />
-
       <div className="slab-name">{currentSlab.name}</div>
+
       <div className="slab-sku">
         {currentSlab.sku} (Level {currentSlab.level})
       </div>

@@ -11,8 +11,11 @@ import { Model } from "./Model";
 import { ModelSelector } from "./ModelSelector";
 import { MODELS } from "../data/models";
 
-import { SLABS } from "../data/slabs";
 import { SlabSelector } from "./SlabSelector";
+
+import { SLAB_SURFACES, type SlabSurfaceRole } from "../data/surface";
+
+import { SLABS, type SurfaceSlabMap } from "../data/slabs";
 
 function LoadingFallback() {
   return (
@@ -23,19 +26,38 @@ function LoadingFallback() {
 }
 
 export function Scene() {
+  console.log("SLAB_SURFACES", SLAB_SURFACES);
+
   const [currentModelId, setCurrentModelId] = useState(MODELS[0]?.id ?? "");
 
-  const [currentSlabId, setCurrentSlabId] = useState(SLABS[0]?.id ?? "");
+  const [surfaceSlabIds, setSurfaceSlabIds] = useState<
+    Record<SlabSurfaceRole, string>
+  >(
+    () =>
+      Object.fromEntries(
+        SLAB_SURFACES.map(({ role }) => [role, SLABS[0]?.id ?? ""]),
+      ) as Record<SlabSurfaceRole, string>,
+  );
 
   const currentModel = useMemo(
     () => MODELS.find((model) => model.id === currentModelId) ?? MODELS[0],
     [currentModelId],
   );
 
-  const currentSlab = useMemo(
-    () => SLABS.find((slab) => slab.id === currentSlabId) ?? SLABS[0],
-    [currentSlabId],
-  );
+  const surfaceSlabs = useMemo<SurfaceSlabMap>(() => {
+    const result: SurfaceSlabMap = {};
+
+    for (const { role } of SLAB_SURFACES) {
+      const slab =
+        SLABS.find((slab) => slab.id === surfaceSlabIds[role]) ?? SLABS[0];
+
+      if (slab) {
+        result[role] = slab;
+      }
+    }
+
+    return result;
+  }, [surfaceSlabIds]);
 
   const isMobile = useMemo(
     () =>
@@ -44,7 +66,7 @@ export function Scene() {
     [],
   );
 
-  if (!currentModel || !currentSlab) {
+  if (!currentModel || SLABS.length === 0) {
     return <div>Visualiser data unavailable.</div>;
   }
 
@@ -73,7 +95,7 @@ export function Scene() {
           <Model
             key={currentModel.id}
             model={currentModel}
-            slab={currentSlab}
+            surfaceSlabs={surfaceSlabs}
           />
         </Suspense>
 
@@ -93,11 +115,22 @@ export function Scene() {
           onModelChange={setCurrentModelId}
         />
       )}
-      <SlabSelector
-        slabs={SLABS}
-        currentSlabId={currentSlab.id}
-        onSlabChange={setCurrentSlabId}
-      />
+      <div className="slab-selectors">
+        {SLAB_SURFACES.map(({ role, label }) => (
+          <SlabSelector
+            key={role}
+            title={label}
+            slabs={SLABS}
+            currentSlabId={surfaceSlabIds[role]}
+            onSlabChange={(slabId) =>
+              setSurfaceSlabIds((current) => ({
+                ...current,
+                [role]: slabId,
+              }))
+            }
+          />
+        ))}
+      </div>
     </main>
   );
 }
