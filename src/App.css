@@ -1,3 +1,7 @@
+/* =========================================================
+   ROOT / VISUALISER
+   ========================================================= */
+
 #root {
   width: 100vw;
   height: 100vh;
@@ -5,16 +9,24 @@
 }
 
 .visualiser {
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
+
+/* =========================================================
+   MODEL LOADING SPINNER
+   ========================================================= */
+
 .model-spinner {
   width: 48px;
   height: 48px;
+
   border: 4px solid rgba(255, 255, 255, 0.2);
   border-top-color: white;
   border-radius: 50%;
+
   animation: spin 0.8s linear infinite;
 }
 
@@ -24,12 +36,18 @@
   }
 }
 
+
+/* =========================================================
+   MODEL SELECTOR
+   ========================================================= */
+
 .model-selector {
   position: fixed;
   top: 1rem;
   left: 1rem;
   z-index: 10;
 
+  box-sizing: border-box;
   width: 260px;
   padding: 1rem;
 
@@ -40,11 +58,13 @@
   border-radius: 8px;
 
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .model-dropdown {
   box-sizing: border-box;
   width: 100%;
+
   padding: 0.5rem;
   margin-bottom: 0.75rem;
 
@@ -53,6 +73,8 @@
 
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
+
+  font: inherit;
 }
 
 .model-name {
@@ -62,83 +84,50 @@
 
 .model-description {
   margin-top: 0.25rem;
+
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.65);
 }
 
-.slab-selector {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
 
-  width: 260px;
-  padding: 1rem;
+/* =========================================================
+   SLAB SELECTOR STACK
+   ========================================================= */
 
-  color: white;
-  background: rgba(0, 0, 0, 0.45);
-
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-
-  backdrop-filter: blur(14px);
-}
-
-.selector-title {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.slab-dropdown {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 0.75rem;
-
-  color: white;
-  background: #272727;
-
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-.slab-preview {
-  display: block;
-  width: 100%;
-  aspect-ratio: 2 / 1;
-  object-fit: cover;
-
-  margin-bottom: 0.75rem;
-  border-radius: 4px;
-}
-
-.slab-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.slab-sku {
-  margin-top: 0.2rem;
-  font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.65);
-}
-
+/*
+ * THIS cunt owns the fixed positioning.
+ *
+ * Individual slab selectors live inside it normally,
+ * so Benchtop / Splashback / future surfaces stack
+ * vertically instead of sitting on top of each other.
+ */
 .slab-selectors {
   position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 10;
 
-  width: 280px;
-
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+
+  width: 280px;
+
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
 }
 
+
+/* =========================================================
+   INDIVIDUAL SLAB SELECTOR
+   ========================================================= */
+
 .slab-selector {
+  box-sizing: border-box;
+  width: 100%;
   padding: 1rem;
+
+  flex: 0 0 auto;
 
   color: white;
   background: rgba(0, 0, 0, 0.45);
@@ -147,33 +136,176 @@
   border-radius: 8px;
 
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .selector-title {
   margin-bottom: 0.5rem;
+
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .slab-dropdown {
   box-sizing: border-box;
   width: 100%;
+
   padding: 0.5rem;
+  margin-bottom: 0.75rem;
 
   color: white;
   background: #272727;
 
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
+
+  font: inherit;
+}
+
+.slab-preview {
+  display: block;
+
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+
+  margin-bottom: 0.75rem;
+
+  border-radius: 4px;
 }
 
 .slab-name {
-  margin-top: 0.6rem;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
 .slab-sku {
   margin-top: 0.2rem;
+
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.65);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.slab-selectors::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slab-selectors::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+}
+
+.slab-selectors::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .model-selector {
+    top: 0.75rem;
+    left: 0.75rem;
+
+    width: calc(50vw - 1.125rem);
+    max-width: 220px;
+
+    padding: 0.75rem;
+  }
+
+  .slab-selectors {
+    top: 0.75rem;
+    right: 0.75rem;
+
+    width: calc(50vw - 1.125rem);
+    max-width: 220px;
+
+    max-height: calc(100vh - 1.5rem);
+
+    gap: 0.5rem;
+  }
+
+  .slab-selector {
+    padding: 0.75rem;
+  }
+
+  .model-dropdown,
+  .slab-dropdown {
+    padding: 0.45rem;
+
+    font-size: 0.8rem;
+  }
+
+  .model-name,
+  .slab-name,
+  .selector-title {
+    font-size: 0.8rem;
+  }
+
+  .model-description,
+  .slab-sku {
+    font-size: 0.7rem;
+  }
+
+  .slab-preview {
+    margin-bottom: 0.5rem;
+  }
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  /*
+   * On proper tiny cunt screens, don't split the viewport
+   * into two skinny unreadable columns.
+   *
+   * Put the model selector across the top and slab controls
+   * underneath it on the right.
+   */
+
+  .model-selector {
+    top: 0.5rem;
+    left: 0.5rem;
+    right: 0.5rem;
+
+    width: auto;
+    max-width: none;
+
+    padding: 0.6rem;
+  }
+
+  .model-description {
+    display: none;
+  }
+
+  .model-dropdown {
+    margin-bottom: 0.4rem;
+  }
+
+  .slab-selectors {
+    top: 7rem;
+    right: 0.5rem;
+
+    width: min(220px, calc(100vw - 1rem));
+
+    max-height: calc(100vh - 7.5rem);
+  }
+
+  .slab-selector {
+    padding: 0.6rem;
+  }
+
+  .slab-preview {
+    aspect-ratio: 2.2 / 1;
+  }
 }
