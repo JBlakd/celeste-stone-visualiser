@@ -26,8 +26,6 @@ function LoadingFallback() {
 }
 
 export function Scene() {
-  console.log("SLAB_SURFACES", SLAB_SURFACES);
-
   const [currentModelId, setCurrentModelId] = useState(MODELS[0]?.id ?? "");
 
   const [surfaceSlabIds, setSurfaceSlabIds] = useState<

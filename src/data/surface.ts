@@ -1,6 +1,7 @@
 export enum SurfaceRole {
   StoneBenchtop = "STONE_BENCHTOP",
   StoneSplashback = "STONE_SPLASHBACK",
+  StoneIsland = "STONE_ISLAND",
   Cabinetry = "CABINETRY",
   Floor = "FLOOR",
 }
@@ -19,6 +20,10 @@ export const SLAB_SURFACES = [
   {
     role: SurfaceRole.StoneSplashback,
     label: "Splashback",
+  },
+  {
+    role: SurfaceRole.StoneIsland,
+    label: "Island",
   },
 ] as const;
 
