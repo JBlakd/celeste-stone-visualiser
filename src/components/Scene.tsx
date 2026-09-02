@@ -37,6 +37,13 @@ export function Scene() {
     [currentSlabId],
   );
 
+  const isMobile = useMemo(
+    () =>
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.innerWidth <= 768,
+    [],
+  );
+
   if (!currentModel || !currentSlab) {
     return <div>Visualiser data unavailable.</div>;
   }
@@ -45,6 +52,7 @@ export function Scene() {
     <main className="visualiser">
       <Canvas
         shadows
+        dpr={isMobile ? 1 : [1, 1.5]}
         camera={{
           position: [0, 0.5, 2],
           fov: 45,
@@ -53,14 +61,14 @@ export function Scene() {
         <color attach="background" args={["#4d4a47"]} />
 
         <Suspense fallback={<LoadingFallback />}>
-          <SoftShadows size={25} samples={20} focus={0.5} />
+          <SoftShadows size={25} samples={isMobile ? 6 : 20} focus={0.5} />{" "}
           <Environment preset="apartment" />
           <directionalLight
             position={[5, 8, 5]}
             intensity={1}
             castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
+            shadow-mapSize-width={isMobile ? 1024 : 2048}
+            shadow-mapSize-height={isMobile ? 1024 : 2048}
           />
           <Model
             key={currentModel.id}

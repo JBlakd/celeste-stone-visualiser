@@ -1,16 +1,15 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
-import { useGLTF, useTexture } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 import type { ModelDefinition } from "../data/models";
-import { computeAutoFit } from "../three/meshUtils";
-import { upgradeMeshTextures } from "../three/textures";
+import type { SlabDefinition } from "../data/slabs";
 
 import { SurfaceRole, isSurfaceRole } from "../data/surface";
-
-import type { SlabDefinition } from "../data/slabs";
+import { computeAutoFit } from "../three/meshUtils";
+import { upgradeMeshTextures } from "../three/textures";
 
 interface ModelProps {
   model: ModelDefinition;
@@ -19,27 +18,25 @@ interface ModelProps {
 
 export function Model({ model, slab }: ModelProps) {
   const { scene: source } = useGLTF(model.path);
-  const slabTexture = useTexture(slab.texture);
 
   const gl = useThree((state) => state.gl);
 
+  const currentSlabTexture = useRef<THREE.Texture | null>(null);
+
   const maxAnisotropy = useMemo(() => gl.capabilities.getMaxAnisotropy(), [gl]);
 
-  useEffect(() => {
-    // TextureLoader textures use normal image orientation by default.
-    // glTF UVs expect this flipped setting.
-    slabTexture.flipY = false;
+  const isMobile = useMemo(
+    () =>
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.innerWidth <= 768,
+    [],
+  );
 
-    // This is a colour/albedo texture, not linear data.
-    slabTexture.colorSpace = THREE.SRGBColorSpace;
-
-    slabTexture.wrapS = THREE.RepeatWrapping;
-    slabTexture.wrapT = THREE.RepeatWrapping;
-
-    slabTexture.anisotropy = maxAnisotropy;
-    slabTexture.needsUpdate = true;
-  }, [slabTexture, maxAnisotropy]);
-
+  /*
+   * Clone the kitchen ONCE PER MODEL.
+   *
+   * Slab changes no longer rebuild this entire scene.
+   */
   const scene = useMemo(() => {
     const clone = source.clone(true);
 
@@ -52,18 +49,12 @@ export function Model({ model, slab }: ModelProps) {
 
       switch (originalMaterial.name) {
         case SurfaceRole.StoneBenchtop:
-          return new THREE.MeshBasicMaterial({
-            name: SurfaceRole.StoneBenchtop,
-            map: slabTexture,
-            color: 0xffffff,
-            side: THREE.DoubleSide,
-          });
-
         case SurfaceRole.StoneSplashback:
-          return new THREE.MeshBasicMaterial({
-            name: SurfaceRole.StoneSplashback,
-            map: slabTexture,
+          return new THREE.MeshStandardMaterial({
+            name: originalMaterial.name,
             color: 0xffffff,
+            roughness: 0.25,
+            metalness: 0,
             side: THREE.DoubleSide,
           });
 
@@ -79,7 +70,6 @@ export function Model({ model, slab }: ModelProps) {
 
       if (!mesh.isMesh) return;
 
-      // Don't mutate useGLTF's cached materials.
       if (Array.isArray(mesh.material)) {
         mesh.material = mesh.material.map(prepareMaterial);
       } else if (mesh.material) {
@@ -91,8 +81,11 @@ export function Model({ model, slab }: ModelProps) {
     });
 
     return clone;
-  }, [source, slabTexture]);
+  }, [source]);
 
+  /*
+   * Upgrade the kitchen's ORIGINAL textures once.
+   */
   useEffect(() => {
     scene.traverse((child) => {
       const mesh = child as THREE.Mesh;
@@ -102,6 +95,134 @@ export function Model({ model, slab }: ModelProps) {
       upgradeMeshTextures(mesh, maxAnisotropy);
     });
   }, [scene, maxAnisotropy]);
+
+  /*
+   * Load slab texture manually.
+   *
+   * Crucially:
+   *   old slab -> dispose()
+   *   new slab -> GPU
+   *
+   * We are NOT retaining every slab ever selected.
+   */
+  useEffect(() => {
+    let cancelled = false;
+
+    const loader = new THREE.TextureLoader();
+
+    loader.load(
+      slab.texture,
+
+      (texture) => {
+        if (cancelled) {
+          texture.dispose();
+          return;
+        }
+
+        texture.flipY = false;
+        texture.colorSpace = THREE.SRGBColorSpace;
+
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+
+        if (isMobile) {
+          /*
+           * Save a cuntload of mobile VRAM.
+           *
+           * Full mip chains cost roughly another 33%.
+           */
+          texture.generateMipmaps = false;
+          texture.minFilter = THREE.LinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+
+          texture.anisotropy = Math.min(maxAnisotropy, 4);
+        } else {
+          texture.generateMipmaps = true;
+          texture.minFilter = THREE.LinearMipmapLinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+
+          texture.anisotropy = maxAnisotropy;
+        }
+
+        texture.needsUpdate = true;
+
+        /*
+         * Apply this one texture to every stone surface.
+         */
+        scene.traverse((child) => {
+          const mesh = child as THREE.Mesh;
+
+          if (!mesh.isMesh) return;
+
+          const materials = Array.isArray(mesh.material)
+            ? mesh.material
+            : [mesh.material];
+
+          materials.forEach((material) => {
+            if (
+              material instanceof THREE.MeshStandardMaterial &&
+              (material.name === SurfaceRole.StoneBenchtop ||
+                material.name === SurfaceRole.StoneSplashback)
+            ) {
+              material.map = texture;
+              material.needsUpdate = true;
+            }
+          });
+        });
+
+        /*
+         * NOW murder the old GPU texture.
+         */
+        const previousTexture = currentSlabTexture.current;
+
+        currentSlabTexture.current = texture;
+
+        if (previousTexture && previousTexture !== texture) {
+          previousTexture.dispose();
+        }
+      },
+
+      undefined,
+
+      (error) => {
+        console.error("Failed to load slab texture:", slab.texture, error);
+      },
+    );
+
+    return () => {
+      /*
+       * Can't abort TextureLoader's underlying image request,
+       * but if it finishes after slab changed we'll dispose it
+       * immediately instead of putting it on the GPU.
+       */
+      cancelled = true;
+    };
+  }, [slab.texture, scene, maxAnisotropy, isMobile]);
+
+  /*
+   * Dispose our dynamic slab + cloned materials
+   * when THIS model disappears.
+   */
+  useEffect(() => {
+    return () => {
+      currentSlabTexture.current?.dispose();
+      currentSlabTexture.current = null;
+
+      scene.traverse((child) => {
+        const mesh = child as THREE.Mesh;
+
+        if (!mesh.isMesh) return;
+
+        const materials = Array.isArray(mesh.material)
+          ? mesh.material
+          : [mesh.material];
+
+        materials.forEach((material) => {
+          material?.dispose();
+        });
+      });
+    };
+  }, [scene]);
 
   const autoFit = useMemo(() => {
     if (model.autoFit === false) {
