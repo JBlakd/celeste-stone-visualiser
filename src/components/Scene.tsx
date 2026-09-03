@@ -37,6 +37,10 @@ export function Scene() {
       ) as Record<SlabSurfaceRole, string>,
   );
 
+  const [currentSurfaceRole, setCurrentSurfaceRole] = useState<SlabSurfaceRole>(
+    SLAB_SURFACES[0].role,
+  );
+
   const currentModel = useMemo(
     () => MODELS.find((model) => model.id === currentModelId) ?? MODELS[0],
     [currentModelId],
@@ -113,22 +117,18 @@ export function Scene() {
           onModelChange={setCurrentModelId}
         />
       )}
-      <div className="slab-selectors">
-        {SLAB_SURFACES.map(({ role, label }) => (
-          <SlabSelector
-            key={role}
-            title={label}
-            slabs={SLABS}
-            currentSlabId={surfaceSlabIds[role]}
-            onSlabChange={(slabId) =>
-              setSurfaceSlabIds((current) => ({
-                ...current,
-                [role]: slabId,
-              }))
-            }
-          />
-        ))}
-      </div>
+      <SlabSelector
+        slabs={SLABS}
+        surfaceSlabIds={surfaceSlabIds}
+        currentSurfaceRole={currentSurfaceRole}
+        onSurfaceChange={setCurrentSurfaceRole}
+        onSlabChange={(role, slabId) =>
+          setSurfaceSlabIds((current) => ({
+            ...current,
+            [role]: slabId,
+          }))
+        }
+      />
     </main>
   );
 }
