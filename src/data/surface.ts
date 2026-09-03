@@ -14,16 +14,16 @@ export enum SurfaceRole {
  */
 export const SLAB_SURFACES = [
   {
+    role: SurfaceRole.StoneIsland,
+    label: "Island",
+  },
+  {
     role: SurfaceRole.StoneBenchtop,
     label: "Benchtop",
   },
   {
     role: SurfaceRole.StoneSplashback,
     label: "Splashback",
-  },
-  {
-    role: SurfaceRole.StoneIsland,
-    label: "Island",
   },
 ] as const;
 

@@ -226,11 +226,14 @@ export function Model({ model, surfaceSlabs }: ModelProps) {
    * when THIS model disappears.
    */
   useEffect(() => {
-    return () => {
-      currentSlabTextures.current.forEach((texture) => texture.dispose());
+    const slabTextures = currentSlabTextures.current;
+    const slabUrls = currentSlabUrls.current;
 
-      currentSlabTextures.current.clear();
-      currentSlabUrls.current.clear();
+    return () => {
+      slabTextures.forEach((texture) => texture.dispose());
+
+      slabTextures.clear();
+      slabUrls.clear();
 
       scene.traverse((child) => {
         const mesh = child as THREE.Mesh;
