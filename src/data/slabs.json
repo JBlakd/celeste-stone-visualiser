@@ -175,10 +175,115 @@
     "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF9071-Taj_Lumina.jpg"
   },
   {
+    "id": "rivuline",
+    "sku": "CSF6339",
+    "name": "Rivuline",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6339-Rivuline.webp"
+  },
+  {
+    "id": "mineral-valleys",
+    "sku": "CSF6625",
+    "name": "Mineral Valleys",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6625-Mineral_Valleys.webp"
+  },
+  {
+    "id": "silky-grey",
+    "sku": "CSF6727",
+    "name": "Silky Grey",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6727-Silky_Grey.webp"
+  },
+  {
+    "id": "linenza",
+    "sku": "CSF6728",
+    "name": "Linenza",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6728-Linenza.JPG"
+  },
+  {
+    "id": "silky-white",
+    "sku": "CSF6729",
+    "name": "Silky White",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6729-Silky_White.JPG"
+  },
+  {
+    "id": "angelo-gold",
+    "sku": "CSF6808",
+    "name": "Angelo Gold",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6808-Angelo_Gold.webp"
+  },
+  {
+    "id": "tectonic-tessellations",
+    "sku": "CSF6809",
+    "name": "Tectonic Tessellations",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6809-Tectonic_Tessellations.webp"
+  },
+  {
+    "id": "snowline",
+    "sku": "CSF6859",
+    "name": "Snowline",
+    "level": 3,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level3-CSF6859-Snowline.jpg"
+  },
+  {
+    "id": "first-snow",
+    "sku": "CSF1000",
+    "name": "First Snow",
+    "level": 2,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF1000-First_Snow.webp"
+  },
+  {
+    "id": "calacatta-pure",
+    "sku": "CSF1025",
+    "name": "Calacatta Pure",
+    "level": 2,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF1025-Calacatta_Pure.webp"
+  },
+  {
+    "id": "calacatta-nuvola",
+    "sku": "CSF1026",
+    "name": "Calacatta Nuvola",
+    "level": 2,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF1026-Calacatta_Nuvola.webp"
+  },
+  {
+    "id": "carrara-cloud",
+    "sku": "CSF6608",
+    "name": "Carrara Cloud",
+    "level": 2,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6608-Carrara_Cloud.webp"
+  },
+  {
     "id": "calacatta-black",
     "sku": "CSF6669",
     "name": "Calacatta Black",
     "level": 2,
-    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp"
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.JPG"
+  },
+  {
+    "id": "speckled-snowfall",
+    "sku": "CSF1010",
+    "name": "Speckled Snowfall",
+    "level": 1,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level1-CSF1010-Speckled_Snowfall.webp"
+  },
+  {
+    "id": "stardust-gleam",
+    "sku": "CSF1011",
+    "name": "Stardust Gleam",
+    "level": 1,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level1-CSF1011-Stardust_Gleam.webp"
+  },
+  {
+    "id": "glacial-shards",
+    "sku": "CSF1013",
+    "name": "Glacial Shards",
+    "level": 1,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level1-CSF1013-Glacial_Shards.webp"
   }
 ]
