@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 import { useGLTF } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
@@ -31,12 +32,7 @@ export function Model({ model, surfaceSlabs }: ModelProps) {
   const currentSlabUrls = useRef(new Map<SlabSurfaceRole, string>());
   const maxAnisotropy = useMemo(() => gl.capabilities.getMaxAnisotropy(), [gl]);
 
-  const isMobile = useMemo(
-    () =>
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.innerWidth <= 768,
-    [],
-  );
+  const isMobile = useIsMobile();
 
   /*
    * Clone the kitchen ONCE PER MODEL.

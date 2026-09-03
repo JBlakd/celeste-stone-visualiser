@@ -214,7 +214,7 @@
    MOBILE
    ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (pointer: coarse) {
   .model-selector {
     top: 0.75rem;
     left: 0.75rem;
@@ -261,10 +261,60 @@
   }
 
   .slab-preview {
+    width: 140px;
+    max-width: 100%;
+
+    margin-top: 0.25rem;
+    margin-right: auto;
     margin-bottom: 0.5rem;
+    margin-left: auto;
+
+    aspect-ratio: 2 / 1;
   }
 }
 
+/*
+ * Phones held sideways.
+ *
+ * Height is the scarce resource here,
+ * so shrink the slab image even harder.
+ */
+@media (pointer: coarse) and (orientation: landscape) {
+  .slab-selector {
+    width: 210px;
+    padding: 0.6rem;
+  }
+
+  .slab-preview {
+    width: 110px;
+    aspect-ratio: 2 / 1;
+
+    margin-top: 0.15rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .selector-field {
+    margin-bottom: 0.45rem;
+  }
+
+  .selector-title {
+    margin-bottom: 0.25rem;
+    font-size: 0.7rem;
+  }
+
+  .slab-dropdown {
+    padding: 0.35rem;
+    font-size: 0.75rem;
+  }
+
+  .slab-name {
+    font-size: 0.75rem;
+  }
+
+  .slab-sku {
+    font-size: 0.65rem;
+  }
+}
 
 /* =========================================================
    VERY SMALL MOBILE

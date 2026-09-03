@@ -1,4 +1,5 @@
 import { Suspense, useMemo, useState } from "react";
+import { useIsMobile } from "../hooks/useIsMobile";
 import { Canvas } from "@react-three/fiber";
 import {
   Environment,
@@ -61,12 +62,7 @@ export function Scene() {
     return result;
   }, [surfaceSlabIds]);
 
-  const isMobile = useMemo(
-    () =>
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.innerWidth <= 768,
-    [],
-  );
+  const isMobile = useIsMobile();
 
   if (!currentModel || SLABS.length === 0) {
     return <div>Visualiser data unavailable.</div>;
