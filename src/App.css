@@ -10,6 +10,7 @@
 
 .visualiser {
   position: relative;
+
   width: 100%;
   height: 100%;
 }
@@ -23,11 +24,14 @@
   width: 48px;
   height: 48px;
 
-  border: 4px solid rgba(255, 255, 255, 0.2);
+  border: 4px solid
+    rgba(255, 255, 255, 0.2);
+
   border-top-color: white;
   border-radius: 50%;
 
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.8s linear
+    infinite;
 }
 
 @keyframes spin {
@@ -38,31 +42,195 @@
 
 
 /* =========================================================
-   MODEL SELECTOR
+   CONTROL DRAWER
    ========================================================= */
 
-.model-selector {
+/*
+ * One cunt owns the positioning now.
+ *
+ * ModelSelector and SlabSelector are merely cards
+ * living inside this drawer.
+ */
+.selector-drawer {
   position: fixed;
+
   top: 1rem;
   left: 1rem;
-  z-index: 10;
+
+  z-index: 20;
+
+  width: 280px;
+
+  transition:
+    transform 220ms ease;
+}
+
+
+/*
+ * Normal state.
+ */
+.selector-drawer.is-open {
+  transform: translateX(0);
+}
+
+
+/*
+ * Move the drawer its full width plus its
+ * original 1rem left offset.
+ *
+ * The toggle button sticks out to the right,
+ * so it remains visible after the drawer leaves.
+ */
+.selector-drawer.is-closed {
+  transform: translateX(
+    calc(-100% - 1rem)
+  );
+}
+
+
+/* =========================================================
+   DRAWER CONTENT
+   ========================================================= */
+
+.selector-drawer-content {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+
+  max-height: calc(
+    100vh - 2rem
+  );
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+/* =========================================================
+   DRAWER TOGGLE
+   ========================================================= */
+
+.selector-drawer-toggle {
+  position: absolute;
+
+  top: 0;
+  right: -44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   box-sizing: border-box;
-  width: 260px;
+
+  width: 36px;
+  height: 48px;
+
+  padding: 0;
+
+  color: white;
+  background: rgba(
+    0,
+    0,
+    0,
+    0.55
+  );
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-left: none;
+
+  border-radius:
+    0 8px 8px 0;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter:
+    blur(14px);
+
+  cursor: pointer;
+
+  font-size: 1.8rem;
+  line-height: 1;
+
+  user-select: none;
+  -webkit-user-select: none;
+
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.selector-drawer-toggle:hover {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.72
+  );
+
+  border-color: rgba(
+    255,
+    255,
+    255,
+    0.32
+  );
+}
+
+.selector-drawer-toggle:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   SHARED CONTROL CARD
+   ========================================================= */
+
+.model-selector,
+.slab-selector {
+  /*
+   * IMPORTANT:
+   * neither selector positions itself anymore.
+   *
+   * The drawer owns positioning.
+   */
+  position: static;
+
+  box-sizing: border-box;
+
+  width: 100%;
+  max-width: none;
+
   padding: 1rem;
 
   color: white;
-  background: rgba(0, 0, 0, 0.45);
 
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(
+    0,
+    0,
+    0,
+    0.45
+  );
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.15);
+
   border-radius: 8px;
 
   backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  -webkit-backdrop-filter:
+    blur(14px);
 }
+
+
+/* =========================================================
+   MODEL SELECTOR
+   ========================================================= */
 
 .model-dropdown {
   box-sizing: border-box;
+
   width: 100%;
 
   padding: 0.5rem;
@@ -71,7 +239,9 @@
   color: white;
   background: #272727;
 
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid
+    rgba(255, 255, 255, 0.2);
+
   border-radius: 4px;
 
   font: inherit;
@@ -86,41 +256,23 @@
   margin-top: 0.25rem;
 
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.65);
+
+  color: rgba(
+    255,
+    255,
+    255,
+    0.65
+  );
 }
 
 
 /* =========================================================
-   SINGLE SURFACE / SLAB SELECTOR
-   ========================================================= */
-
-.slab-selector {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10;
-
-  box-sizing: border-box;
-  width: 280px;
-  padding: 1rem;
-
-  color: white;
-  background: rgba(0, 0, 0, 0.45);
-
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-
-/* =========================================================
-   SELECTOR FIELDS
+   SLAB SELECTOR FIELDS
    ========================================================= */
 
 .selector-field {
   display: block;
+
   margin-bottom: 0.75rem;
 }
 
@@ -130,16 +282,23 @@
 
 .selector-title {
   display: block;
+
   margin-bottom: 0.4rem;
 
   font-size: 0.8rem;
   font-weight: 600;
 
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(
+    255,
+    255,
+    255,
+    0.75
+  );
 }
 
 .slab-dropdown {
   box-sizing: border-box;
+
   width: 100%;
 
   padding: 0.5rem;
@@ -147,7 +306,9 @@
   color: white;
   background: #272727;
 
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid
+    rgba(255, 255, 255, 0.2);
+
   border-radius: 4px;
 
   font: inherit;
@@ -162,6 +323,7 @@
   display: block;
 
   width: 100%;
+
   aspect-ratio: 2 / 1;
 
   object-fit: cover;
@@ -186,12 +348,18 @@
   margin-top: 0.2rem;
 
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.65);
+
+  color: rgba(
+    255,
+    255,
+    255,
+    0.65
+  );
 }
 
 
 /* =========================================================
-   INTERACTION
+   DROPDOWN INTERACTION
    ========================================================= */
 
 .model-dropdown,
@@ -201,38 +369,91 @@
 
 .model-dropdown:focus,
 .slab-dropdown:focus {
-  border-color: rgba(255, 255, 255, 0.45);
+  border-color: rgba(
+    255,
+    255,
+    255,
+    0.45
+  );
 }
 
 .model-dropdown:hover,
 .slab-dropdown:hover {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(
+    255,
+    255,
+    255,
+    0.35
+  );
 }
 
 
 /* =========================================================
-   MOBILE
+   DRAWER SCROLLBAR
    ========================================================= */
 
-@media (max-width: 768px), (pointer: coarse) {
-  .model-selector {
+.selector-drawer-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.selector-drawer-content::-webkit-scrollbar-thumb {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.25
+  );
+
+  border-radius: 999px;
+}
+
+.selector-drawer-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+/* =========================================================
+   MOBILE / TOUCH
+   ========================================================= */
+
+@media (
+    max-width: 768px
+  ),
+  (pointer: coarse) {
+
+  .selector-drawer {
     top: 0.75rem;
     left: 0.75rem;
 
-    width: calc(50vw - 1.125rem);
-    max-width: 220px;
+    width: 220px;
+  }
 
+  .selector-drawer.is-closed {
+    transform: translateX(
+      calc(-100% - 0.75rem)
+    );
+  }
+
+  .selector-drawer-content {
+    gap: 0.5rem;
+
+    max-height: calc(
+      100vh - 1.5rem
+    );
+  }
+
+  .model-selector,
+  .slab-selector {
     padding: 0.75rem;
   }
 
-  .slab-selector {
-    top: 0.75rem;
-    right: 0.75rem;
+  .selector-drawer-toggle {
+    right: -42px;
 
-    width: calc(50vw - 1.125rem);
-    max-width: 220px;
+    width: 34px;
+    height: 46px;
 
-    padding: 0.75rem;
+    font-size: 1.6rem;
   }
 
   .model-dropdown,
@@ -273,24 +494,66 @@
   }
 }
 
+
+/* =========================================================
+   LANDSCAPE PHONE / TOUCH DEVICE
+   ========================================================= */
+
 /*
- * Phones held sideways.
- *
- * Height is the scarce resource here,
- * so shrink the slab image even harder.
+ * Height is precious when some cunt turns the
+ * phone sideways.
  */
-@media (pointer: coarse) and (orientation: landscape) {
-  .slab-selector {
+@media (
+    pointer: coarse
+  )
+  and (
+    orientation: landscape
+  ) {
+
+  .selector-drawer {
+    top: 0.5rem;
+    left: 0.5rem;
+
     width: 210px;
+  }
+
+  .selector-drawer.is-closed {
+    transform: translateX(
+      calc(-100% - 0.5rem)
+    );
+  }
+
+  .selector-drawer-content {
+    gap: 0.4rem;
+
+    max-height: calc(
+      100vh - 1rem
+    );
+  }
+
+  .model-selector,
+  .slab-selector {
     padding: 0.6rem;
   }
 
-  .slab-preview {
-    width: 110px;
-    aspect-ratio: 2 / 1;
+  .selector-drawer-toggle {
+    top: 0;
 
-    margin-top: 0.15rem;
-    margin-bottom: 0.35rem;
+    right: -40px;
+
+    width: 32px;
+    height: 42px;
+  }
+
+  .model-dropdown,
+  .slab-dropdown {
+    padding: 0.35rem;
+
+    font-size: 0.75rem;
+  }
+
+  .model-dropdown {
+    margin-bottom: 0.4rem;
   }
 
   .selector-field {
@@ -299,41 +562,68 @@
 
   .selector-title {
     margin-bottom: 0.25rem;
+
     font-size: 0.7rem;
   }
 
-  .slab-dropdown {
-    padding: 0.35rem;
-    font-size: 0.75rem;
+  .slab-preview {
+    width: 110px;
+
+    margin-top: 0.15rem;
+    margin-right: auto;
+    margin-bottom: 0.35rem;
+    margin-left: auto;
+
+    aspect-ratio: 2 / 1;
   }
 
+  .model-name,
   .slab-name {
     font-size: 0.75rem;
   }
 
+  .model-description,
   .slab-sku {
     font-size: 0.65rem;
   }
 }
 
+
 /* =========================================================
-   VERY SMALL MOBILE
+   VERY SMALL PORTRAIT MOBILE
    ========================================================= */
 
-@media (max-width: 480px) {
-  /*
-   * Model selector across the top.
-   * Stone selector underneath.
-   */
+@media (
+  max-width: 480px
+) {
 
-  .model-selector {
+  .selector-drawer {
     top: 0.5rem;
     left: 0.5rem;
-    right: 0.5rem;
 
-    width: auto;
-    max-width: none;
+    /*
+     * Leave enough room for the toggle tab.
+     */
+    width: min(
+      230px,
+      calc(100vw - 3.5rem)
+    );
+  }
 
+  .selector-drawer.is-closed {
+    transform: translateX(
+      calc(-100% - 0.5rem)
+    );
+  }
+
+  .selector-drawer-content {
+    max-height: calc(
+      100vh - 1rem
+    );
+  }
+
+  .model-selector,
+  .slab-selector {
     padding: 0.6rem;
   }
 
@@ -345,21 +635,27 @@
     margin-bottom: 0.4rem;
   }
 
-  .slab-selector {
-    top: 6.75rem;
-    left: auto;
-    right: 0.5rem;
+  .slab-preview {
+    width: 120px;
 
-    width: min(230px, calc(100vw - 1rem));
-    max-width: none;
+    aspect-ratio: 2.2 / 1;
+  }
+}
 
-    max-height: calc(100vh - 7.25rem);
-    overflow-y: auto;
 
-    padding: 0.6rem;
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (
+  prefers-reduced-motion: reduce
+) {
+
+  .selector-drawer {
+    transition: none;
   }
 
-  .slab-preview {
-    aspect-ratio: 2.2 / 1;
+  .selector-drawer-toggle {
+    transition: none;
   }
 }

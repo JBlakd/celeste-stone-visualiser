@@ -42,6 +42,11 @@ export function Scene() {
     SLAB_SURFACES[0].role,
   );
 
+  /*
+   * Whole selector drawer visibility.
+   */
+  const [controlsOpen, setControlsOpen] = useState(true);
+
   const currentModel = useMemo(
     () => MODELS.find((model) => model.id === currentModelId) ?? MODELS[0],
     [currentModelId],
@@ -81,8 +86,10 @@ export function Scene() {
         <color attach="background" args={["#4d4a47"]} />
 
         <Suspense fallback={<LoadingFallback />}>
-          <SoftShadows size={25} samples={isMobile ? 6 : 20} focus={0.5} />{" "}
+          <SoftShadows size={25} samples={isMobile ? 6 : 20} focus={0.5} />
+
           <Environment preset="apartment" />
+
           <directionalLight
             position={[5, 8, 5]}
             intensity={1}
@@ -90,6 +97,7 @@ export function Scene() {
             shadow-mapSize-width={isMobile ? 1024 : 2048}
             shadow-mapSize-height={isMobile ? 1024 : 2048}
           />
+
           <Model
             key={currentModel.id}
             model={currentModel}
@@ -106,25 +114,46 @@ export function Scene() {
         />
       </Canvas>
 
-      {MODELS.length > 1 && (
-        <ModelSelector
-          models={MODELS}
-          currentModelId={currentModel.id}
-          onModelChange={setCurrentModelId}
-        />
-      )}
-      <SlabSelector
-        slabs={SLABS}
-        surfaceSlabIds={surfaceSlabIds}
-        currentSurfaceRole={currentSurfaceRole}
-        onSurfaceChange={setCurrentSurfaceRole}
-        onSlabChange={(role, slabId) =>
-          setSurfaceSlabIds((current) => ({
-            ...current,
-            [role]: slabId,
-          }))
-        }
-      />
+      {/* ================================================
+          SLIDING CONTROL DRAWER
+          ================================================ */}
+
+      <aside
+        className={`selector-drawer ${controlsOpen ? "is-open" : "is-closed"}`}
+      >
+        <button
+          type="button"
+          className="selector-drawer-toggle"
+          onClick={() => setControlsOpen((open) => !open)}
+          aria-label={controlsOpen ? "Hide controls" : "Show controls"}
+          aria-expanded={controlsOpen}
+        >
+          <span aria-hidden="true">{controlsOpen ? "‹" : "›"}</span>
+        </button>
+
+        <div className="selector-drawer-content">
+          {MODELS.length > 1 && (
+            <ModelSelector
+              models={MODELS}
+              currentModelId={currentModel.id}
+              onModelChange={setCurrentModelId}
+            />
+          )}
+
+          <SlabSelector
+            slabs={SLABS}
+            surfaceSlabIds={surfaceSlabIds}
+            currentSurfaceRole={currentSurfaceRole}
+            onSurfaceChange={setCurrentSurfaceRole}
+            onSlabChange={(role, slabId) =>
+              setSurfaceSlabIds((current) => ({
+                ...current,
+                [role]: slabId,
+              }))
+            }
+          />
+        </div>
+      </aside>
     </main>
   );
 }
