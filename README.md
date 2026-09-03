@@ -1,156 +1,297 @@
-# 3D Product Configurator
+# Celeste Stone Visualiser
 
-A modern 3D product configurator built with React Three Fiber, featuring real-time color customization, exploded views, and a switchable model library.
+Interactive 3D surface visualiser for [Celeste Stone](https://celestestone.com.au), built to preview engineered stone slabs in realistic kitchen environments.
+
+The visualiser allows users to switch between kitchen scenes and independently apply Celeste Stone designs to configurable surfaces such as benchtops and splashbacks. Stone textures are mapped using UV coordinates prepared in Blender so slab veining can be displayed at a realistic physical scale rather than simply stretched across each surface.
 
 ## Features
 
-- **Model switcher** — dropdown to pick between multiple 3D models (Aline, Umber, PlayStation 5 DualSense).
-- **Per-part color customization** — tint individual parts of a model via color pickers. Each model defines its own list of parts.
-- **Move-parts mode** — click a mesh on the model (or a part in the color list) to select it, then drag the gizmo to reposition. Right-click a part to snap it back. Selection is bidirectional between the 3D view and the parts list.
-- **Explode view** — slider that separates a model's sub-meshes so the internal structure is visible. GLB body/per-node models explode radially from the center; per-material models use fixed vectors from the preset.
-- **Auto-fit + re-centering** — GLB models are automatically sized and centered regardless of their export units.
-- **Hover highlight**, **orbit / auto-rotate**, and configurable **background color**.
-- **HTML loading spinner** shown inside the Canvas while models stream in.
-- **TypeScript**, fully typed.
+- Interactive 3D kitchen environments
+- Real-time Celeste Stone slab selection
+- Independent stone selection for multiple configurable surfaces
+- Material-based surface detection using named GLB materials
+- Physically scaled slab UV mapping
+- Support for waterfall edges, joins, bookmatching and deliberate slab placement through Blender UVs
+- Multiple kitchen/model selection
+- Orbit, zoom and free camera navigation
+- HDR environment lighting and soft shadows
+- Responsive controls for desktop, portrait mobile and landscape mobile
+- Mobile-specific rendering and texture optimisations
+- Collapsible interface to maximise the 3D viewing area
+- External model and texture delivery through Cloudflare R2
 
-## Supported model types
+## Live Visualiser
 
-| Loader | Color mode | Renderer | Behavior |
-| ------ | ---------- | -------- | -------- |
-| `gltf` / `.glb` | `per-material` | `PerMaterialConfigurator` | Per-material tinting keyed by the material name. Uses fixed explode vectors from `modelPreset.explodeMap`. Used by the PS5 model. |
-| `gltf` / `.glb` | `per-node` | `BodyTintedConfigurator` | Per-part tinting: looks up each mesh's ancestor node name in the preset's material list. Material is cloned per mesh so parts can be tinted independently while embedded textures are preserved. Used by the Aline and Umber models. |
-| `gltf` / `.glb` | `body` | `BodyTintedConfigurator` | Single-color tint applied to every mesh in the model. |
-| `fbx` | `body` | `FBXConfigurator` | Same as GLB body mode, plus ability to load external PBR textures (baseColor / normal / roughness / metallic) per preset. |
-
-Selection state, gizmo wiring, and event plumbing are shared across GLTF renderers via the `useMeshSelection` hook and `SelectionGizmo` component. Auto-fit and radial-offset math live in `src/three/meshUtils.ts`.
+https://visualiser.celestestone.com.au
 
 ## Tech Stack
 
-- **React 19** — UI framework
-- **Three.js** — 3D graphics library
-- **React Three Fiber** — React renderer for Three.js
-- **React Three Drei** — helpers (useGLTF, useFBX, useTexture, OrbitControls, Environment, SoftShadows)
-- **TypeScript**
-- **Vite**
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or later)
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-4. Open your browser and navigate to `http://localhost:5173`
-
-## Scripts
-
-- `npm run dev` — Start development server
-- `npm run build` — Build for production
-- `npm run preview` — Preview production build
-- `npm run lint` — Run ESLint
-- `npm run lint:fix` — Fix ESLint issues automatically
-- `npm run type-check` — Check TypeScript types
+- React 19
+- TypeScript
+- Three.js
+- React Three Fiber
+- React Three Drei
+- Vite
+- Cloudflare
+- Cloudflare R2
+- Blender for model preparation and UV mapping
 
 ## Project Structure
 
-```
-public/
-└── models/                            # 3D assets (GLTF / GLB / FBX + textures)
-
+```text
 src/
-├── data/
-│   └── modelPresets.ts                # MODEL_PRESETS data + ModelPreset / MaterialConfig types
-├── three/
-│   ├── textures.ts                    # 4K texture upgrade (anisotropy + trilinear filtering)
-│   └── meshUtils.ts                   # collectMeshes, computeAutoFit, computeRadialDirections
-├── hooks/
-│   └── useMeshSelection.ts            # Selection state + two-way parent sync + event handlers
 ├── components/
-│   ├── Configurator.tsx               # Thin router — dispatches to a concrete renderer
-│   ├── configurators/
-│   │   ├── BodyTintedConfigurator.tsx # GLB body + per-node renderer
-│   │   ├── PerMaterialConfigurator.tsx# GLTF per-material renderer (e.g. PS5)
-│   │   └── FBXConfigurator.tsx        # FBX body renderer with external PBR textures
-│   ├── SelectionGizmo.tsx             # Wraps drei TransformControls for move-parts mode
-│   ├── Scene.tsx                      # Canvas, lights, camera, top-level state
-│   ├── ModelSelector.tsx              # Model dropdown UI (pure, no data)
-│   ├── ColorControls.tsx              # Per-part color pickers + list-based selection
-│   ├── ExplodeControls.tsx            # Explode-view slider + presets
-│   └── Toolbar.tsx                    # Background color, move-parts, auto-rotate, explode, config
-├── App.tsx
+│   ├── Model.tsx
+│   ├── ModelSelector.tsx
+│   ├── Scene.tsx
+│   └── SlabSelector.tsx
+├── data/
+│   ├── models.json
+│   ├── models.ts
+│   ├── slabs.json
+│   ├── slabs.ts
+│   └── surface.ts
+├── hooks/
+│   └── useIsMobile.ts
+├── three/
+│   ├── meshUtils.ts
+│   └── textures.ts
 ├── App.css
-└── types.d.ts
+├── App.tsx
+├── index.css
+└── main.tsx
 ```
 
-## Adding a new model
+Large runtime assets such as `.glb` kitchen models and slab texture images are hosted separately rather than committed to the repository.
 
-1. Drop the model file under `public/models/<model_name>/`.
-2. Append a new entry to `MODEL_PRESETS` in `src/data/modelPresets.ts`:
-   ```ts
-   {
-     id: 'my-model',
-     name: 'My Model',
-     path: 'models/my_model/my_model.glb',
-     loader: 'gltf',                          // or 'fbx'
-     colorMode: 'per-node',                   // 'per-material' | 'body' | 'per-node'
-     description: 'Short description',
-     materials: [
-       { id: 'node_name_in_file', name: 'Part Label', description: '...', defaultColor: '#ffffff' },
-       // ...
-     ],
-     // Optional fixed-direction explode offsets (per-material renderers only):
-     // explodeMap: { node_name_in_file: [x, y, z], ... }
-     // Optional FBX-only textures:
-     // textures: { baseColor, normal, roughness, metallic }
-   }
-   ```
-3. For `per-node` models, the `id` of each material must match a node name inside the GLB. Inspect the file to see node names — from the project root:
-   ```bash
-   node -e "const fs=require('fs');const b=fs.readFileSync('public/models/<your.glb>');const n=b.readUInt32LE(12);const g=JSON.parse(b.slice(20,20+n).toString());(g.nodes||[]).forEach((x,i)=>console.log(i,x.name))"
-   ```
-4. Pick colors one by one at runtime to verify which preset entry maps to which visible part, then rename `name` / `description` accordingly.
+## Surface Convention
 
-## Performance notes
+Configurable surfaces are identified using material names embedded in the GLB.
 
-- FBX meshes skip shadow casting by default — they are usually high-poly and shadow-map rendering is the dominant cost.
-- Materials on GLBs in `per-node` mode are cloned once at setup so subsequent tint updates don't trigger full material rebuilds.
-- Bounding-box computation (auto-fit + explode direction) runs once per loaded scene, not every frame.
+For example:
 
-## Deployment
+```text
+STONE_BENCHTOP
+STONE_SPLASHBACK
+CABINETRY
+FLOOR
+```
 
-This project includes GitHub Actions for automatic deployment to GitHub Pages.
+Slab-configurable surfaces are defined centrally in `src/data/surface.ts`.
 
-### Manual Deployment
+A Blender model intended for use in the visualiser should assign the appropriate material name to every configurable surface before export.
+
+The application then detects those materials when the GLB is loaded and replaces their runtime materials with the selected Celeste Stone texture.
+
+This keeps scene-specific geometry and UV information inside the model while keeping slab selection logic generic.
+
+## Slab Data
+
+Available stone designs are defined in:
+
+```text
+src/data/slabs.json
+```
+
+A slab entry contains information such as:
+
+```json
+{
+  "id": "taj-mahal",
+  "sku": "CSF9070",
+  "name": "Taj Mahal",
+  "level": 3,
+  "texture": "https://visualiser-assets.celestestone.com.au/slabs/CSF9070-Taj_Mahal.webp"
+}
+```
+
+Slab images represent full-size Celeste Stone slabs.
+
+Where physical-scale UV mapping is used, the image is treated as representing a:
+
+```text
+3200 mm × 1600 mm
+```
+
+slab.
+
+## Model Data
+
+Available visualiser scenes are defined in:
+
+```text
+src/data/models.json
+```
+
+GLB files are hosted externally and loaded at runtime.
+
+Keeping model metadata in Git while hosting large binary assets separately keeps the repository lightweight and makes models easier to update independently.
+
+## Preparing a Model in Blender
+
+The basic model preparation workflow is:
+
+1. Import or prepare the kitchen model in Blender.
+2. Confirm the scene geometry is correctly scaled.
+3. Clean unnecessary or problematic geometry where required.
+4. Separate or identify configurable surfaces.
+5. Assign the appropriate material names, such as `STONE_BENCHTOP` and `STONE_SPLASHBACK`.
+6. UV-map stone surfaces against a 3200 × 1600 mm slab reference.
+7. Position individual UV islands to represent realistic slab cuts, joins or bookmatching.
+8. Export the scene as `.glb`.
+9. Upload the GLB to the visualiser asset store.
+10. Add or update the corresponding entry in `models.json`.
+
+### UV Mapping
+
+UV mapping is intentionally handled in Blender rather than calculated at runtime.
+
+This means the model itself controls:
+
+- stone scale
+- vein direction
+- cut location
+- joins
+- waterfall continuity
+- bookmatching
+- the relationship between separate fabricated pieces
+
+The web application only changes which slab texture is applied.
+
+This avoids having scene-specific fabrication logic hard-coded into React or Three.js.
+
+## Adding a New Slab
+
+1. Upload the slab image to the asset store.
+2. Add an entry to `src/data/slabs.json`.
+3. Commit and deploy.
+
+No changes to the renderer are required.
+
+## Adding a New Stone Surface Type
+
+Add the surface role to the central surface configuration in:
+
+```text
+src/data/surface.ts
+```
+
+For example:
+
+```ts
+StoneVanity = "STONE_VANITY";
+```
+
+Add it to the slab-configurable surface list with its UI label, then assign the same material name to the relevant geometry in Blender.
+
+The surface selection UI and slab assignment system are designed to work from this shared configuration rather than requiring separate controls for every surface type.
+
+## Development
+
+### Requirements
+
+- Node.js
+- npm
+
+### Install
+
+```bash
+npm install
+```
+
+### Start Development Server
+
+```bash
+npm run dev
+```
+
+The Vite development server normally runs at:
+
+```text
+http://localhost:5173
+```
+
+### Production Build
 
 ```bash
 npm run build
-npm run preview  # Test the build locally
 ```
 
-### GitHub Pages Setup
+### Preview Production Build
 
-1. Enable GitHub Pages in your repository settings
-2. Set source to "GitHub Actions"
-3. Push to main branch to trigger automatic deployment
+```bash
+npm run preview
+```
 
-## Live Demo
+### Lint
 
-Once deployed, your app will be available at:
-[Product configurator 3D live page](https://gorhorvat.github.io/product-configurator-3d/)
+```bash
+npm run lint
+```
 
-## License
+### Fix Lint Issues
 
-MIT License
+```bash
+npm run lint:fix
+```
+
+### Type Check
+
+```bash
+npm run type-check
+```
+
+## Asset Hosting
+
+Large assets are served from:
+
+```text
+https://visualiser-assets.celestestone.com.au
+```
+
+This includes:
+
+- kitchen GLB models
+- full-resolution slab textures
+
+The asset domain must permit cross-origin requests from the visualiser domain so Three.js can load images as WebGL textures.
+
+## Mobile Performance
+
+Mobile devices use reduced rendering settings to limit GPU and memory pressure.
+
+Optimisations include:
+
+- reduced device pixel ratio
+- reduced shadow quality
+- reduced shadow sampling
+- lower texture anisotropy
+- disabled mipmap generation for dynamically loaded slab textures
+- disposal of replaced slab textures
+- mobile detection that continues to work when a device is rotated into landscape
+
+## Architecture
+
+The project deliberately separates three concerns:
+
+```text
+Blender / GLB
+    ↓
+geometry + UV layout + surface names
+
+JSON data
+    ↓
+available models + available slabs
+
+React / Three.js
+    ↓
+selection UI + rendering + dynamic texture assignment
+```
+
+The renderer therefore does not need to know how a particular kitchen was fabricated.
+
+If the GLB uses the expected surface naming convention and contains suitable UVs, it can use the same generic visualiser code.
+
+## Background
+
+This repository began as a fork of `gorhorvat/product-configurator-3d` and has since been substantially simplified and repurposed as a dedicated stone-surface visualisation application for Celeste Stone.
