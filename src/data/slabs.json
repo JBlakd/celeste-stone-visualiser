@@ -84,11 +84,81 @@
     "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9083-Strata_Magna.jpg"
   },
   {
-    "id": "calacatta-black",
-    "sku": "CSF6669",
-    "name": "Calacatta Black",
-    "level": 2,
-    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp"
+    "id": "rose-alabaster",
+    "sku": "CSF6613",
+    "name": "Rosé Alabaster",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF6613-Rosé_Alabaster.JPG"
+  },
+  {
+    "id": "calacatta-eureka",
+    "sku": "CSF6614",
+    "name": "Calacatta Eureka",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF6614-Calacatta_Eureka.jpg"
+  },
+  {
+    "id": "gilded-ivory",
+    "sku": "CSF6615",
+    "name": "Gilded Ivory",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF6615-Gilded_Ivory.jpg"
+  },
+  {
+    "id": "calacatta-fusion",
+    "sku": "CSF6769",
+    "name": "Calacatta Fusion",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF6769-Calacatta_Fusion.JPG"
+  },
+  {
+    "id": "statuario-classica",
+    "sku": "CSF6951",
+    "name": "Statuario Classica",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF6951-Statuario_Classica.jpg"
+  },
+  {
+    "id": "cloudy-echo",
+    "sku": "CSF7130",
+    "name": "Cloudy Echo",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF7130-Cloudy_Echo.webp"
+  },
+  {
+    "id": "quartzite-laguna",
+    "sku": "CSF7133",
+    "name": "Quartzite Laguna",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF7133-Quartzite_Laguna.JPG"
+  },
+  {
+    "id": "pearl-dunes",
+    "sku": "CSF7134",
+    "name": "Pearl Dunes",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF7134-Pearl_Dunes.jpg"
+  },
+  {
+    "id": "ferric-tides",
+    "sku": "CSF7153",
+    "name": "Ferric Tides",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF7153-Ferric_Tides.jpg"
+  },
+  {
+    "id": "alloyed-rift",
+    "sku": "CSF9000",
+    "name": "Alloyed Rift",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF9000-Alloyed_Rift.JPG"
+  },
+  {
+    "id": "marfil-vein",
+    "sku": "CSF9022",
+    "name": "Marfil Vein",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF9022-Marfil_Vein.jpg"
   },
   {
     "id": "taj-mahal",
@@ -96,5 +166,19 @@
     "name": "Taj Mahal",
     "level": 4,
     "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF9070-Taj_Mahal.webp"
+  },
+  {
+    "id": "taj-lumina",
+    "sku": "CSF9071",
+    "name": "Taj Lumina",
+    "level": 4,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level4-CSF9071-Taj_Lumina.jpg"
+  },
+  {
+    "id": "calacatta-black",
+    "sku": "CSF6669",
+    "name": "Calacatta Black",
+    "level": 2,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level2-CSF6669-Calacatta_Black.webp"
   }
 ]
