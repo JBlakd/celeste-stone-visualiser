@@ -1,5 +1,47 @@
 [
   {
+    "id": "dolomite-matrix",
+    "sku": "CSF9035",
+    "name": "Dolomite Matrix",
+    "level": 6,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF9035-Dolomite_Matrix.JPG"
+  },
+  {
+    "id": "aurelia-prime",
+    "sku": "CSF9002",
+    "name": "Aurelia Prime",
+    "level": 6,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF9002-Aurelia_Prime.JPG"
+  },
+  {
+    "id": "calacatta-viola",
+    "sku": "CSF9050",
+    "name": "Calacatta Viola",
+    "level": 6,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF9050-Calacatta_Viola.JPG"
+  },
+  {
+    "id": "cristallo-grey",
+    "sku": "CSF9040",
+    "name": "Cristallo Grey",
+    "level": 6,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF9040-Cristallo_Grey.jpg"
+  },
+  {
+    "id": "emerald-cradle",
+    "sku": "CSF9030",
+    "name": "Emerald Cradle",
+    "level": 6,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF9030-Emerald_Cradle.JPG"
+  },
+  {
+    "id": "granite-noir",
+    "sku": "CSF8000",
+    "name": "Granite Noir",
+    "level": 6,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF8000-Granite_Noir.jpg"
+  },
+  {
     "id": "calacatta-black",
     "sku": "CSF6669",
     "name": "Calacatta Black",
