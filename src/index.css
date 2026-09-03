@@ -3,11 +3,17 @@ body,
 #root {
   width: 100%;
   height: 100%;
+
   margin: 0;
+}
+
+html {
+  background: #3a3734;
 }
 
 body {
   min-width: 320px;
+
   overflow: hidden;
 
   font-family:
@@ -15,5 +21,22 @@ body {
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
     sans-serif;
+
+  background: #3a3734;
+
+  color: #f4f1ed;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+select,
+input,
+textarea {
+  font: inherit;
 }

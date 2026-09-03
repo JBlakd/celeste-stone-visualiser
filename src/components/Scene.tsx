@@ -1,6 +1,8 @@
 import { Suspense, useMemo, useState } from "react";
 import { useIsMobile } from "../hooks/useIsMobile";
+
 import { Canvas } from "@react-three/fiber";
+
 import {
   Environment,
   Html,
@@ -10,9 +12,9 @@ import {
 
 import { Model } from "./Model";
 import { ModelSelector } from "./ModelSelector";
-import { MODELS } from "../data/models";
-
 import { SlabSelector } from "./SlabSelector";
+
+import { MODELS } from "../data/models";
 
 import { SLAB_SURFACES, type SlabSurfaceRole } from "../data/surface";
 
@@ -42,9 +44,6 @@ export function Scene() {
     SLAB_SURFACES[0].role,
   );
 
-  /*
-   * Whole selector drawer visibility.
-   */
   const [controlsOpen, setControlsOpen] = useState(true);
 
   const currentModel = useMemo(
@@ -83,7 +82,7 @@ export function Scene() {
           fov: 45,
         }}
       >
-        <color attach="background" args={["#4d4a47"]} />
+        <color attach="background" args={["#3A3734"]} />
 
         <Suspense fallback={<LoadingFallback />}>
           <SoftShadows size={25} samples={isMobile ? 6 : 20} focus={0.5} />
@@ -113,10 +112,6 @@ export function Scene() {
           maxDistance={currentModel.maxDistance ?? 50}
         />
       </Canvas>
-
-      {/* ================================================
-          SLIDING CONTROL DRAWER
-          ================================================ */}
 
       <aside
         className={`selector-drawer ${controlsOpen ? "is-open" : "is-closed"}`}
