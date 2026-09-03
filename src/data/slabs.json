@@ -42,6 +42,48 @@
     "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level6-CSF8000-Granite_Noir.jpg"
   },
   {
+    "id": "ivory-drift",
+    "sku": "CSF9066",
+    "name": "Ivory Drift",
+    "level": 5,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9066-Ivory_Drift.JPG"
+  },
+  {
+    "id": "sahara-champagne",
+    "sku": "CSF9073",
+    "name": "Sahara Champagne",
+    "level": 5,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9073-Sahara_Champagne.jpg"
+  },
+  {
+    "id": "stratis",
+    "sku": "CSF9075",
+    "name": "Stratis",
+    "level": 5,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9075-Stratis.jpg"
+  },
+  {
+    "id": "quartzite-nimbus",
+    "sku": "CSF9077",
+    "name": "Quartzite Nimbus",
+    "level": 5,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9077-Quartzite_Nimbus.jpg"
+  },
+  {
+    "id": "travertique",
+    "sku": "CSF9078",
+    "name": "Travertique",
+    "level": 5,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9078-Travertique.jpg"
+  },
+  {
+    "id": "strata-magna",
+    "sku": "CSF9083",
+    "name": "Strata Magna",
+    "level": 5,
+    "texture": "https://visualiser-assets.celestestone.com.au/slabs/Level5-CSF9083-Strata_Magna.jpg"
+  },
+  {
     "id": "calacatta-black",
     "sku": "CSF6669",
     "name": "Calacatta Black",
