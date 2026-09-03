@@ -1,29 +1,11 @@
 [
   {
-    "id": "largeKitchenIsland-v3",
-    "name": "Large Kitchen Island V3",
-    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v3.glb",
+    "id": "largeKitchenIsland-v4",
+    "name": "Large Kitchen Island V4",
+    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v4.glb",
     "loader": "gltf",
     "colorMode": "body",
-    "description": "Large Kitchen Island V3",
-    "materials": []
-  },
-  {
-    "id": "largeKitchenIsland-v2",
-    "name": "Large Kitchen Island V2",
-    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v2.glb",
-    "loader": "gltf",
-    "colorMode": "body",
-    "description": "Large Kitchen Island V2",
-    "materials": []
-  },
-  {
-    "id": "largeKitchenIsland",
-    "name": "Large Kitchen Island",
-    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland.glb",
-    "loader": "gltf",
-    "colorMode": "body",
-    "description": "Large Kitchen Island",
+    "description": "Large Kitchen Island V4",
     "materials": []
   },
   {
