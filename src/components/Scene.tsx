@@ -36,12 +36,15 @@ function LoadingFallback() {
 export function Scene() {
   const [currentModelId, setCurrentModelId] = useState(MODELS[0]?.id ?? "");
 
+  const defaultSlab =
+    SLABS.find((slab) => slab.id === "taj-lumina") ?? SLABS[0];
+
   const [surfaceSlabIds, setSurfaceSlabIds] = useState<
     Record<SlabSurfaceRole, string>
   >(
     () =>
       Object.fromEntries(
-        SLAB_SURFACES.map(({ role }) => [role, SLABS[0]?.id ?? ""]),
+        SLAB_SURFACES.map(({ role }) => [role, defaultSlab?.id ?? ""]),
       ) as Record<SlabSurfaceRole, string>,
   );
 
