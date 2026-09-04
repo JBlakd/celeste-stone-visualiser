@@ -1,11 +1,11 @@
 [
   {
-    "id": "largeKitchenIsland-v9",
-    "name": "Large Kitchen Island V9",
-    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v9.glb",
+    "id": "largeKitchenIsland-v10",
+    "name": "Large Kitchen Island V10",
+    "path": "https://visualiser-assets.celestestone.com.au/models/largeKitchenIsland-v10.glb",
     "loader": "gltf",
     "colorMode": "body",
-    "description": "Large Kitchen Island V9",
+    "description": "Large Kitchen Island V10",
     "materials": []
   },
   {
