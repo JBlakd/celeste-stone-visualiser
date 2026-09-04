@@ -1,16 +1,22 @@
 import type { SlabDefinition } from "../data/slabs";
-import { SLAB_SURFACES, type SlabSurfaceRole } from "../data/surface";
+
+import {
+  ALL_SLAB_SURFACES,
+  SLAB_SURFACES,
+  type SlabSurfaceRole,
+  type SlabSurfaceSelection,
+} from "../data/surface";
 
 interface SlabSelectorProps {
   slabs: SlabDefinition[];
 
   surfaceSlabIds: Record<SlabSurfaceRole, string>;
 
-  currentSurfaceRole: SlabSurfaceRole;
+  currentSurfaceRole: SlabSurfaceSelection;
 
-  onSurfaceChange: (role: SlabSurfaceRole) => void;
+  onSurfaceChange: (role: SlabSurfaceSelection) => void;
 
-  onSlabChange: (role: SlabSurfaceRole, slabId: string) => void;
+  onSlabChange: (role: SlabSurfaceSelection, slabId: string) => void;
 }
 
 export function SlabSelector({
@@ -20,12 +26,22 @@ export function SlabSelector({
   onSurfaceChange,
   onSlabChange,
 }: SlabSelectorProps) {
-  const currentSlabId = surfaceSlabIds[currentSurfaceRole];
+  const selectedSlabIds =
+    currentSurfaceRole === ALL_SLAB_SURFACES
+      ? SLAB_SURFACES.map(({ role }) => surfaceSlabIds[role])
+      : [surfaceSlabIds[currentSurfaceRole]];
 
-  const currentSlab =
-    slabs.find((slab) => slab.id === currentSlabId) ?? slabs[0];
+  const firstSelectedSlabId = selectedSlabIds[0] ?? "";
 
-  if (!currentSlab) {
+  const isMixed =
+    currentSurfaceRole === ALL_SLAB_SURFACES &&
+    selectedSlabIds.some((slabId) => slabId !== firstSelectedSlabId);
+
+  const currentSlab = isMixed
+    ? undefined
+    : (slabs.find((slab) => slab.id === firstSelectedSlabId) ?? slabs[0]);
+
+  if (!isMixed && !currentSlab) {
     return null;
   }
 
@@ -38,9 +54,11 @@ export function SlabSelector({
           className="slab-dropdown"
           value={currentSurfaceRole}
           onChange={(event) =>
-            onSurfaceChange(event.target.value as SlabSurfaceRole)
+            onSurfaceChange(event.target.value as SlabSurfaceSelection)
           }
         >
+          <option value={ALL_SLAB_SURFACES}>All Surfaces</option>
+
           {SLAB_SURFACES.map(({ role, label }) => (
             <option key={role} value={role}>
               {label}
@@ -54,11 +72,17 @@ export function SlabSelector({
 
         <select
           className="slab-dropdown"
-          value={currentSlab.id}
+          value={isMixed ? "" : (currentSlab?.id ?? "")}
           onChange={(event) =>
             onSlabChange(currentSurfaceRole, event.target.value)
           }
         >
+          {isMixed && (
+            <option value="" disabled>
+              Mixed — choose a stone
+            </option>
+          )}
+
           {slabs.map((slab) => (
             <option key={slab.id} value={slab.id}>
               {slab.name} — {slab.sku} (Level {slab.level})
@@ -67,18 +91,30 @@ export function SlabSelector({
         </select>
       </label>
 
-      <img
-        className="slab-preview"
-        src={currentSlab.texture}
-        alt={currentSlab.name}
-        crossOrigin="anonymous"
-      />
+      {currentSlab ? (
+        <>
+          <img
+            className="slab-preview"
+            src={currentSlab.texture}
+            alt={currentSlab.name}
+            crossOrigin="anonymous"
+          />
 
-      <div className="slab-name">{currentSlab.name}</div>
+          <div className="slab-name">{currentSlab.name}</div>
 
-      <div className="slab-sku">
-        {currentSlab.sku} (Level {currentSlab.level})
-      </div>
+          <div className="slab-sku">
+            {currentSlab.sku} (Level {currentSlab.level})
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="slab-name">Mixed surfaces</div>
+
+          <div className="slab-sku">
+            Choose a stone to apply it to every surface.
+          </div>
+        </>
+      )}
     </div>
   );
 }

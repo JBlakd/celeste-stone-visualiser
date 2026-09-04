@@ -29,6 +29,10 @@ export const SLAB_SURFACES = [
 
 export type SlabSurfaceRole = (typeof SLAB_SURFACES)[number]["role"];
 
+export const ALL_SLAB_SURFACES = "ALL_SLAB_SURFACES" as const;
+
+export type SlabSurfaceSelection = SlabSurfaceRole | typeof ALL_SLAB_SURFACES;
+
 export function isSurfaceRole(
   materialName: string,
 ): materialName is SurfaceRole {

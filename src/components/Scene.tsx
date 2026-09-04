@@ -16,7 +16,12 @@ import { SlabSelector } from "./SlabSelector";
 
 import { MODELS } from "../data/models";
 
-import { SLAB_SURFACES, type SlabSurfaceRole } from "../data/surface";
+import {
+  ALL_SLAB_SURFACES,
+  SLAB_SURFACES,
+  type SlabSurfaceRole,
+  type SlabSurfaceSelection,
+} from "../data/surface";
 
 import { SLABS, type SurfaceSlabMap } from "../data/slabs";
 
@@ -40,9 +45,8 @@ export function Scene() {
       ) as Record<SlabSurfaceRole, string>,
   );
 
-  const [currentSurfaceRole, setCurrentSurfaceRole] = useState<SlabSurfaceRole>(
-    SLAB_SURFACES[0].role,
-  );
+  const [currentSurfaceRole, setCurrentSurfaceRole] =
+    useState<SlabSurfaceSelection>(ALL_SLAB_SURFACES);
 
   const [controlsOpen, setControlsOpen] = useState(true);
 
@@ -140,11 +144,19 @@ export function Scene() {
             surfaceSlabIds={surfaceSlabIds}
             currentSurfaceRole={currentSurfaceRole}
             onSurfaceChange={setCurrentSurfaceRole}
-            onSlabChange={(role, slabId) =>
-              setSurfaceSlabIds((current) => ({
-                ...current,
-                [role]: slabId,
-              }))
+            onSlabChange={(selection, slabId) =>
+              setSurfaceSlabIds((current) => {
+                if (selection === ALL_SLAB_SURFACES) {
+                  return Object.fromEntries(
+                    SLAB_SURFACES.map(({ role }) => [role, slabId]),
+                  ) as Record<SlabSurfaceRole, string>;
+                }
+
+                return {
+                  ...current,
+                  [selection]: slabId,
+                };
+              })
             }
           />
         </div>
