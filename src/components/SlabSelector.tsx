@@ -57,7 +57,7 @@ export function SlabSelector({
             onSurfaceChange(event.target.value as SlabSurfaceSelection)
           }
         >
-          <option value={ALL_SLAB_SURFACES}>All Surfaces</option>
+          <option value={ALL_SLAB_SURFACES}>All Stone Surfaces</option>
 
           {SLAB_SURFACES.map(({ role, label }) => (
             <option key={role} value={role}>
