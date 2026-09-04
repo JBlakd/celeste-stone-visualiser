@@ -9,12 +9,12 @@
     "materials": []
   },
   {
-    "id": "smallModernKitchen",
-    "name": "Small Modern Kitchen",
-    "path": "https://visualiser-assets.celestestone.com.au/models/smallModernKitchen.glb",
+    "id": "kitchenLShape",
+    "name": "L Shaped Kitchen",
+    "path": "https://visualiser-assets.celestestone.com.au/models/kitchenLShape.glb",
     "loader": "gltf",
     "colorMode": "body",
-    "description": "Small Modern Kitchen",
+    "description": "L Shaped Kitchen",
     "materials": []
   }
 ]
